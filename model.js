@@ -919,16 +919,49 @@ var Project = {
   }
 };
 
+var inputs = ["init population", "init infected", "inbound infections"]
+var row1 = new Array(120).fill(100000)
+var row2 = new Array(120).fill(1000)
+var row3 = new Array(120).fill(6)
+
+
 /*
-var run = Project.buildRun("My Model").setStartTime(0).setStepCount(10).run();
-console.log(run.getValues("My Model", "Flow 1"));
-console.log(run.getValues("Panel 1", "Panel Var")); */
+var run = Project.buildRun("My Model").setStartTime(0).setStepCount(10).start();
+run.setInput("Panel 1", "init population", row1);
+run.setInput("Panel 1", "init infected", row2);
+run.setInput("Panel 1", "inbound infections", row3);
+run.runToEnd(); */
 
 
-var builder = Project.buildRun("My Model").setStartTime(0).setStepCount(10);
-builder.configureModel("My Model").setSketch({
-  init_population: [100000, 100000],
-  init_infected: [1000, 1000],
-  inbound_infected: [6, 6]
+
+
+
+var builder = Project.buildRun("Simplest 'SIR' model").setStartTime(0).setStepCount(10);
+
+var modelConfig = builder.configureModel("Simplest 'SIR' model");
+modelConfig.setDataset({
+  element: "initial and inbound data",
+  columns: {
+    "init population": {
+      start: 0,
+      values: row1,
+    },
+    "init infected": {
+      start: 0,
+      values: row2,
+    },
+    "inbound infections": {
+      start: 6,
+      values: row3,
+    },
+  },
 });
-var run = builder.run();
+
+var run = builder.start();
+//run.setInput("Simplest 'SIR' model", "Normal contacts/day per person", 5); //change parameter 1
+//run.setInput("Simplest 'SIR' model", "% of contact events pass infection", 5); //change parameter 2
+run.runToEnd();
+
+
+
+console.log(run.getValues("Simplest 'SIR' model", "Normal contacts/day per person"));
