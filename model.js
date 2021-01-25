@@ -919,24 +919,19 @@ var Project = {
   }
 };
 
-var inputs = ["init population", "init infected", "inbound infections"]
-var row1 = new Array(120).fill(100000)
-var row2 = new Array(120).fill(1000)
-var row3 = new Array(120).fill(6)
+
+/* TAKE IN THE INPUTS VIA JSON */
+
+const data = JSON.parse(require('fs').readFileSync("./input.JSON", 'utf8')); // reads the JSON file
+
+var init_population = data["init population"];
+var init_infected = data["init infected"];
+var inbound_infections = data["inbound infections"];
 
 
-/*
-var run = Project.buildRun("My Model").setStartTime(0).setStepCount(10).start();
-run.setInput("Panel 1", "init population", row1);
-run.setInput("Panel 1", "init infected", row2);
-run.setInput("Panel 1", "inbound infections", row3);
-run.runToEnd(); */
+/* RUN THE MODEL */
 
-
-
-
-
-var builder = Project.buildRun("Simplest 'SIR' model").setStartTime(0).setStepCount(10);
+var builder = Project.buildRun("Simplest 'SIR' model").setStartTime(0).setStepCount(120);
 
 var modelConfig = builder.configureModel("Simplest 'SIR' model");
 modelConfig.setDataset({
@@ -944,15 +939,15 @@ modelConfig.setDataset({
   columns: {
     "init population": {
       start: 0,
-      values: row1,
+      values: init_population,
     },
     "init infected": {
       start: 0,
-      values: row2,
+      values: init_infected,
     },
     "inbound infections": {
       start: 6,
-      values: row3,
+      values: inbound_infections,
     },
   },
 });
@@ -963,5 +958,4 @@ var run = builder.start();
 run.runToEnd();
 
 
-
-console.log(run.getValues("Simplest 'SIR' model", "Normal contacts/day per person"));
+console.log(run.getValues("Simplest 'SIR' model", "Infected people"));
