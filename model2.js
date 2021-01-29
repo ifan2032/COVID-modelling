@@ -66,6 +66,7 @@ __Model.prototype.getSketchValues = function (id) {
   for (var i = 0; i < this.bufSize; ++i) {
     data[i] = this.computeSketch(this.state, null, i, id, NaN);
   }
+
   return data;
 };
 __Model.prototype.setInputByOffset = function (offset, value) {
@@ -601,7 +602,7 @@ do {
 return u1 * Math.sqrt((dof * (Math.exp((-2 / dof) * Math.log(w)) - 1)) / w);
 };
 function Model160(startTime, resolution, stepCount, sketches, lookups, tables, containingModelId, submodelId) {
-  __Model.call(this, 1 + stepCount * resolution, 19, new ModelState160(startTime, resolution, stepCount, sketches, lookups, tables, containingModelId, submodelId));
+  __Model.call(this, 1 + stepCount * resolution, 21, new ModelState160(startTime, resolution, stepCount, sketches, lookups, tables, containingModelId, submodelId));
 }
 Model160.prototype = Object.create(__Model.prototype);
 Model160.prototype.getOffsetById = function getOffsetById(elementId) {
@@ -644,6 +645,10 @@ Model160.prototype.getOffsetById = function getOffsetById(elementId) {
       return 17;
     case 360:
       return 18;
+    case 376:
+      return 19;
+    case 378:
+      return 20;
   }
 };
 Model160.prototype.getSubmodelById = function getSubmodelById(elementId) {
@@ -679,6 +684,8 @@ Model160.prototype.calc1 = function calc1() {
   if ($c[14] === 1) $v[14] = __sketchLookup(__getTableColumn($$.tables, 360, 361), $t / $res, 0);
   if ($c[16] === 1) $v[16] = __sketchLookup(__getTableColumn($$.tables, 360, 362), $t / $res, 0);
   if ($c[17] === 1) $v[17] = __sketchLookup(__getTableColumn($$.tables, 360, 363), $t / $res, 0);
+  if ($c[19] === 1) $v[19] = __sketchLookup(__getTableColumn($$.tables, 360, 373), $t / $res, 0);
+  if ($c[20] === 1) $v[20] = self.computeSketch($$, $o, $t, 378, 0);
   if ($t === 0 && $c[2] === 1) $v[2] = $v[14] - $v[16];
   if ($t === 0 && $c[3] === 1) $v[3] = $v[16];
   if ($c[9] === 1) $v[9] = _div($v[4], $v[14], 0) * 100;
@@ -689,10 +696,10 @@ Model160.prototype.calc1 = function calc1() {
   if ($c[7] === 1) $v[7] = $v[13] < $v[10] ? $v[11] : $v[12];
   if ($c[15] === 1) $v[15] = $v[7] * $v[3];
   if ($c[5] === 1) $v[5] = _max([0, _div($v[15] * $v[2], $v[14], 0)]);
-  if ($c[0] === 1) $v[0] = $v[17] + _min([$v[2], $v[5] * $v[6] / 100]);
+  if ($c[0] === 1) $v[0] = $v[17] + _min([$v[2], $v[5] * $v[6] / 100]) * $v[20];
   $$._170_acc -= $v[0] * $dt;
   $$._171_acc += $v[0] * $dt;
-  for (var i = 0; i < 19; ++i) $o[i][$t] = $v[i];
+  for (var i = 0; i < 21; ++i) $o[i][$t] = $v[i];
   $v[4] += $$._172_acc;
   $$._172_acc = 0;
   $v[2] += $$._170_acc;
@@ -715,8 +722,8 @@ function ModelState160(startTime, resolution, stepCount, sketches, lookups, tabl
   this.tables = tables[160];
   this.lk = __buildLookups(lookups, 160);
   this.t = 0;
-  this.values = new Float64Array(19);
-  this.calc = new Int8Array(19);
+  this.values = new Float64Array(21);
+  this.calc = new Int8Array(21);
   for (var i = 0; i < this.calc.length; ++i) this.calc[i] = 1;
 }
 Model160.prototype.getValues = function getValues(panelName, elementName) {
@@ -771,6 +778,10 @@ Model160.getId = function getId(panelName, elementName) {
           return 359;
         case "initial and inbound data":
           return 360;
+        case "Infections per day data":
+          return 376;
+        case "Reduction in contacts per day %":
+          return 378;
       }
       return;
   }
@@ -904,34 +915,221 @@ Model160.elementMetadata = {
     }, {
       id: 363,
       name: "inbound infections"
+    }, {
+      id: 373,
+      name: "infections per day data"
+    }, {
+      id: 374,
+      name: "deaths per day data"
     }]
+  },
+  376: {
+    id: 376,
+    panel: "Simplest \'SIR\' model",
+    name: "Infections per day data",
+    type: "Variable"
+  },
+  378: {
+    id: 378,
+    panel: "Simplest \'SIR\' model",
+    name: "Reduction in contacts per day %",
+    type: "Variable"
   }
 };
+function Model371(startTime, resolution, stepCount, sketches, lookups, tables, containingModelId, submodelId) {
+  __Model.call(this, 1 + stepCount * resolution, 0, new ModelState371(startTime, resolution, stepCount, sketches, lookups, tables, containingModelId, submodelId));
+}
+Model371.prototype = Object.create(__Model.prototype);
+Model371.prototype.getOffsetById = function getOffsetById(elementId) {
+  switch (elementId) {
+  }
+};
+Model371.prototype.getSubmodelById = function getSubmodelById(elementId) {
+  switch (elementId) {
+  }
+};
+Model371.prototype.computeSketch = function computeSketch($$, $o, $t, id, $blank) {
+  var self = this;
+  var $res = $$.res;
+  var $dt = 1 / $res;
+  var $v = $$.values;
+  var $c = $$.calc;
+  switch (id) {
+    default:
+      return __sketchLookup($$.sk[id], $t / $res, $blank);
+  }
+};
+Model371.prototype.calc1 = function calc1() {
+  var self = this;
+  var $o = this.outputs;
+  var $$ = this.state;
+  var $res = $$.res;
+  var $t = $$.t;
+  var $dt = 1 / $res;
+  var $v = $$.values;
+  var $c = $$.calc;
+  for (var i = 0; i < 0; ++i) $o[i][$t] = $v[i];
+};
+Model371.prototype.calc = function calc() {
+  this.calc1();
+};
+function ModelState371(startTime, resolution, stepCount, sketches, lookups, tables, containingModelId, submodelId) {
+  this.st = startTime;
+  this.scenario = null;
+  this.zt = -startTime * resolution;
+  this.res = resolution;
+  this.sk = __buildSketches(sketches, 371, containingModelId, submodelId);
+  this.tables = tables[371];
+  this.lk = __buildLookups(lookups, 371);
+  this.t = 0;
+  this.values = new Float64Array(0);
+  this.calc = new Int8Array(0);
+  for (var i = 0; i < this.calc.length; ++i) this.calc[i] = 1;
+}
+Model371.prototype.getValues = function getValues(panelName, elementName) {
+  var offset = this.getOffsetById(Model371.getId(panelName, elementName));
+  return offset === undefined ? undefined : this.outputs[offset];
+};
+Model371.prototype.setInput = function setInput(panelName, elementName, value) {
+  var offset = this.getOffsetById(Model371.getId(panelName, elementName));
+  if (offset !== undefined) {
+    this.setInputByOffset(offset, value);
+  }
+};
+Model371.getId = function getId(panelName, elementName) {
+  switch (panelName) {
+    case "Model 1":
+      switch (elementName) {
+      }
+      return;
+  }
+};
+Model371.getPanels = function getPanels() {
+  return [{
+    name: "Model 1",
+    root: true
+  }];
+};
+Model371.elementMetadata = {};
 var Project = {
   byName: {
-    "Simplest \'SIR\' model": Model160
+    "Simplest \'SIR\' model": Model160,
+    "Model 1": Model371
   },
   byId: {
-    160: Model160
+    160: Model160,
+    371: Model371
   },
   buildRun: function (modelName) {
     return new RunBuilder(Project, modelName);
   }
 };
 
+const export_to_json = (data) => {
+    var fs = require("fs");
+    fs.writeFile ("output.json", JSON.stringify(data), (err) => {
+        if (err) throw err;
+        console.log("complete");
+    })
+}
+const range = (start, stop, step) => {
+    var a = [start], b = start;
+    while (b < stop) {
+        a.push(b += step || 1);
+    }
+    return a;
+}
 
-/* TAKE IN THE INPUTS VIA JSON */
+const loss = (arr1, arr2) => {
+    var res = 0;
+    for(let i = 0; i<arr1.length; i++) {
+        res += (arr1[i] - arr2[i]) * (arr1[i] - arr2[i]);
+    }
+    return res
+}
+
+const optimize_simple = (range1, range2) => {
+    var param1_array = range(range1[0], range1[2], 0.01);
+    var param2_array = range(range2[0], range2[1], 0.01);
+    var cur_loss = Infinity;
+    var ans = Array(2);
+
+    for(let i = 0; i<param1_array.length; i++) {
+        for(let j=0; j<param2_array.length; j++) {
+            var new_loss = loss(simple_test(param1_array[i], param2_array[j]), infections_per_day_data);
+
+            if (new_loss < cur_loss) {
+                console.log("new lose", new_loss);
+                cur_loss = new_loss;
+                
+                ans[0] = param1_array[i];
+                ans[1] = param2_array[j];
+            }
+        }
+    }
+
+    return ans;
+}
+
+
+const optimize_bruteforce = (range1, range2) => {
+    var param1_array = range(range1[0], range1[2], 1);
+    var param2_array = range(range2[0], range2[1], 0.001);
+    var cur_loss = Infinity;
+    var ans = [];
+    var ans1 = Array(1);
+    var ans2 = Array(120);
+    for(let i = 0; i<param1_array.length; i++) {
+        for (let z = 0; z<infections_per_day_data.length; z++) {
+            cur_loss = Infinity;
+            for(let j = 0; j<param2_array.length; j++) {
+                var new_loss = loss([test(param1_array[i], param2_array[j], z)], [infections_per_day_data[z]]);
+                
+                if (new_loss < cur_loss) {
+                    console.log("new lose", new_loss);
+                    cur_loss = new_loss;
+                    
+                    ans2[z] = param2_array[j];
+                    ans1[0] = param1_array[i];
+                }
+
+            }
+        }
+    }
+    return {
+        "param2": ans2,
+    };
+}
+
+const simple_test = (val1, val2) => {
+    var run = builder.start();
+    run.setInput("Simplest 'SIR' model", "Normal contacts/day per person", val1); //change parameter 1
+    run.setInput("Simplest 'SIR' model", "Reduction in contacts per day %", val2); //change parameter 2
+    run.runToEnd();
+    var ans = run.getValues("Simplest 'SIR' model", "Newly infected per day");
+    return ans;   
+}
+
+const test = (val1, val2, index) => {
+    var run = builder.start();
+    run.setInput("Simplest 'SIR' model", "Normal contacts/day per person", val1); //change parameter 1
+    run.setInput("Simplest 'SIR' model", "Reduction in contacts per day %", val2); //change parameter 2
+    run.runToEnd();
+    var ans = run.getValues("Simplest 'SIR' model", "Newly infected per day");
+    return ans[index];
+}
+
 
 const data = JSON.parse(require('fs').readFileSync("./input.JSON", 'utf8')); // reads the JSON file
 
 var init_population = data["init population"];
 var init_infected = data["init infected"];
 var inbound_infections = data["inbound infections"];
-
+var infections_per_day_data = data["infections per day data"]
 
 /* RUN THE MODEL */
 
-var builder = Project.buildRun("Simplest 'SIR' model").setStartTime(0).setStepCount(120);
+var builder = Project.buildRun("Simplest 'SIR' model").setStartTime(0).setStepCount(init_population.length-1);
 
 var modelConfig = builder.configureModel("Simplest 'SIR' model");
 modelConfig.setDataset({
@@ -949,24 +1147,19 @@ modelConfig.setDataset({
       start: 0,
       values: inbound_infections,
     },
+    "infections per day data": {
+        start: 0,
+        values: infections_per_day_data,
+    }
   },
 });
 
-builder.setSketch({
-  element: "% of contact events pass infection",
-  start: 0,
-  values: test_array
-});
-
 var run = builder.start();
-var test_array = Array(120);
-test_array.fill(6);
-//run.setInput("Simplest 'SIR' model", "% of contact events pass infection", test_array); //change parameter 2
+//run.setInput("Simplest 'SIR' model", "Normal contacts/day per person", 5); //change parameter 1
+run.setInput("Simplest 'SIR' model", "% of contact events pass infection", [8,9]); //change parameter 2
 run.runToEnd();
-console.log(run.getValues("Simplest 'SIR' model", "% of contact events pass infection"));
+var ans = run.getValues("Simplest 'SIR' model", "Newly infected per day");
 
-/*
-var run = builder.start();
-run.setInput("Simplest 'SIR' model", "Normal contacts/day per person", 10);
-run.runToEnd();
-console.log(run.getValues("Simplest 'SIR' model", "Infected people")); */
+optimization_result = optimize_simple([4, 6], [0,2]);
+console.log(optimization_result);
+//export_to_json(optimization_result);
