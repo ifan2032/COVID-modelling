@@ -1049,8 +1049,8 @@ const loss = (arr1, arr2) => {
 }
 
 const optimize_simple = (range1, range2) => {
-    var param1_array = range(range1[0], range1[2], 0.01);
-    var param2_array = range(range2[0], range2[1], 0.01);
+    var param1_array = range(range1[0], range1[2], 0.001);
+    var param2_array = range(range2[0], range2[1], 0.001);
     var cur_loss = Infinity;
     var ans = Array(2);
 
@@ -1059,7 +1059,7 @@ const optimize_simple = (range1, range2) => {
             var new_loss = loss(simple_test(param1_array[i], param2_array[j]), infections_per_day_data);
 
             if (new_loss < cur_loss) {
-                console.log("new lose", new_loss);
+                console.log("lose:", new_loss);
                 cur_loss = new_loss;
                 
                 ans[0] = param1_array[i];
@@ -1072,8 +1072,8 @@ const optimize_simple = (range1, range2) => {
 }
 
 
-const optimize_bruteforce = (range1, range2) => {
-    var param1_array = range(range1[0], range1[2], 1);
+const optimize = (range1, range2) => {
+    var param1_array = [5] //range(range1[0], range1[2], 1);
     var param2_array = range(range2[0], range2[1], 0.001);
     var cur_loss = Infinity;
     var ans = [];
@@ -1086,7 +1086,7 @@ const optimize_bruteforce = (range1, range2) => {
                 var new_loss = loss([test(param1_array[i], param2_array[j], z)], [infections_per_day_data[z]]);
                 
                 if (new_loss < cur_loss) {
-                    console.log("new lose", new_loss);
+                    console.log("loss:", new_loss);
                     cur_loss = new_loss;
                     
                     ans2[z] = param2_array[j];
@@ -1119,7 +1119,7 @@ const test = (val1, val2, index) => {
     return ans[index];
 }
 
-
+/* PARSE input.JSON containing model inputs*/
 const data = JSON.parse(require('fs').readFileSync("./input.JSON", 'utf8')); // reads the JSON file
 
 var init_population = data["init population"];
@@ -1128,7 +1128,6 @@ var inbound_infections = data["inbound infections"];
 var infections_per_day_data = data["infections per day data"]
 
 /* RUN THE MODEL */
-
 var builder = Project.buildRun("Simplest 'SIR' model").setStartTime(0).setStepCount(init_population.length-1);
 
 var modelConfig = builder.configureModel("Simplest 'SIR' model");
@@ -1154,12 +1153,10 @@ modelConfig.setDataset({
   },
 });
 
-var run = builder.start();
-//run.setInput("Simplest 'SIR' model", "Normal contacts/day per person", 5); //change parameter 1
-run.setInput("Simplest 'SIR' model", "% of contact events pass infection", [8,9]); //change parameter 2
-run.runToEnd();
-var ans = run.getValues("Simplest 'SIR' model", "Newly infected per day");
+/* CHANGE THE CODE BELOW THIS LINE */
+/************************************************************************************/
 
-optimization_result = optimize_simple([4, 6], [0,2]);
-console.log(optimization_result);
-//export_to_json(optimization_result);
+/* EXAMPLE 1: Use flat tuning to find optimal hyperparameters between (4,6) and (0,1) */
+optimization_result = optimize_simple([4, 6], [0, 1]); //calls optimization function
+export_to_json(optimization_result); //store results of function in output.json
+

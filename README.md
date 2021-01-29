@@ -1,15 +1,18 @@
-### TODO
-- Make the model run on AWS (big challenge)
+### JS Export of Simplest SIR Model with Hyperparameter Tuning: https://silico.app/@leonfan/sir-for-hyperparameter-tuning?s=dp6qsWdmQbyjpyhoBwieJA 
 
+## How to run the model:
+- Navigate into COVID-19 directory
+- node model2.js (make sure node is installed on your computer)
 
-### COMPLETED ITEMS
-- Get model to run locally in JSON
-- Figure out a way to input data via JSON/CSV
-- Model reads and takes in JSON file containing inputs
-- Model has a way to measure loss (least square error)
-- Provide hyperparameter tuning parameters
+## Helpful functions within model2.js
+- Optimize (takes in 2 lists, uses time series to tune second parameter)
+- Optimize_simple (takes in 2 lists, uses flat values to tune)
+- loss (calculates loss via least squares)
+- test (run the model to access simulation data)
+- export_to_json (results in output.json file that contains hyperparameter values)
 
-### QUESTIONS
+## See all annotations within model2.js
 
-- How do we get this model to run? [resolved]
-- Where do we put the inputs? [resolved]
+## Things to note:
+- Within terminal, you should see console.log("complete") for successful runs
+
